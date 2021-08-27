@@ -1,11 +1,23 @@
 import React, { Component } from "react";
-// import PropTypes from "prop-types";
+import PropTypes from "prop-types";
 
 export default class Searchbar extends Component {
+  static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+  };
+
+  state = {
+    searchQuery: "",
+  };
+
+  onSubmit = (e) => {
+    e.preventDefault();
+  };
+
   render() {
     return (
       <header className="Searchbar">
-        <form className="SearchForm">
+        <form className="SearchForm" onSubmit={this.props.onSubmit}>
           <button type="submit" className="SearchForm-button">
             <span className="SearchForm-button-label">Search</span>
           </button>
@@ -13,8 +25,8 @@ export default class Searchbar extends Component {
           <input
             className="SearchForm-input"
             type="text"
-            autocomplete="off"
-            autofocus
+            autoComplete="off"
+            autoFocus
             placeholder="Search images and photos"
           />
         </form>

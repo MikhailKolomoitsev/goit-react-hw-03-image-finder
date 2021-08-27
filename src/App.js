@@ -15,6 +15,8 @@ export default class App extends Component {
       .then((pics) => this.setState({ pics: pics.hits }));
   }
 
+  onSubmit() {}
+
   render() {
     return (
       <div className="App">
