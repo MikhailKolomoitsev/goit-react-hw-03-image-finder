@@ -1,6 +1,7 @@
 import "./App.css";
 import { Component } from "react";
 import Searchbar from "./components/Searchbar/Searchbar";
+import ImageGallery from "./components/ImageGallery/ImageGallery";
 
 export default class App extends Component {
   state = {
@@ -21,6 +22,7 @@ export default class App extends Component {
     return (
       <div className="App">
         <Searchbar />
+        <ImageGallery />
       </div>
     );
   }
