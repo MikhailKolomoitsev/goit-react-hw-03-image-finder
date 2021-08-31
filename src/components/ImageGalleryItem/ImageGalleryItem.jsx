@@ -6,7 +6,7 @@ export default class ImageGalleryItem extends Component {
     src: PropTypes.string,
     alt: PropTypes.string,
     large: PropTypes.string,
-    openLargeImage: PropTypes.func,
+    openlargeimage: PropTypes.func,
   };
 
   state = {};
@@ -16,13 +16,12 @@ export default class ImageGalleryItem extends Component {
       <li className="ImageGalleryItem">
         <img
           onClick={(e) => {
-            this.props.openLargeImage(e.target.dataLarge);
+            this.props.openlargeimage(e.target.src.value); // dataLarge
           }}
           src={this.props.src}
           alt={this.props.alt}
-          dataLarge={this.props.large}
+          data={this.props.large}
           className="ImageGalleryItem-image"
-          openLargeImage={this.props.openLargeImage}
         />
       </li>
     );

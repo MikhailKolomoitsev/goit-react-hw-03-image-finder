@@ -5,7 +5,7 @@ import ImageGalleryItem from "../ImageGalleryItem/ImageGalleryItem";
 export default class ImageGalary extends Component {
   static propTypes = {
     pics: PropTypes.array,
-    openLargeImage: PropTypes.func,
+    openlargeimage: PropTypes.func,
   };
 
   state = {};
@@ -16,7 +16,7 @@ export default class ImageGalary extends Component {
         {this.props.pics.map((pic) => {
           return (
             <ImageGalleryItem
-              openLargeImage={this.props.openLargeImage}
+              openlargeimage={this.props.openlargeimage}
               key={pic.id}
               src={pic.webformatURL}
               alt={pic.webformatURL}

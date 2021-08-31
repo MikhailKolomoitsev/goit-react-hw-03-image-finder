@@ -74,14 +74,12 @@ export default class App extends Component {
   };
 
   loadMore() {
-    const cat = "cat";
-    const number = 2;
-    this.getPics(cat, number);
+    this.getPics(this.state.searchQuery, this.state.currentPage);
   }
 
   modalOpener(link) {
     this.toggleModal();
-    this.setState(({ modalPic }) => ({ modalPic: link }));
+    return this.setState(({ modalPic }) => ({ modalPic: link }));
   }
   render() {
     return (
@@ -89,7 +87,7 @@ export default class App extends Component {
         <Searchbar onSubmit={this.onSubmit} />
         <ImageGallery
           pics={this.state.pics}
-          openLargeImage={this.modalOpener}
+          openlargeimage={this.modalOpener}
         />
         {this.state.searchQuery !== "" && <Button handler={this.loadMore} />}
         {this.state.showLoader && (
