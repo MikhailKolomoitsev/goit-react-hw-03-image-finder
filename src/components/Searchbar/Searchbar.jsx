@@ -6,18 +6,10 @@ export default class Searchbar extends Component {
     onSubmit: PropTypes.func.isRequired,
   };
 
-  state = {
-    searchQuery: "",
-  };
-
-  onSubmit = (e) => {
-    e.preventDefault();
-  };
-
   render() {
     return (
       <header className="Searchbar">
-        <form className="SearchForm" onSubmit={this.props.onSubmit}>
+        <form className="SearchForm" onSubmit={(e) => this.props.onSubmit(e)}>
           <button type="submit" className="SearchForm-button">
             <span className="SearchForm-button-label">Search</span>
           </button>
