@@ -4,6 +4,8 @@ import Searchbar from "./components/Searchbar/Searchbar";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import Button from "./components/Button/Button";
 import axios from "axios";
+import Loader from "react-loader-spinner";
+import Modal from "./components/Modal/Modal";
 
 export default class App extends Component {
   state = {
@@ -17,18 +19,31 @@ export default class App extends Component {
 
   componentDidMount() {}
 
-  getPics(query, page) {
+  loaderHandler() {
+    this.setState((prevState) => ({
+      showLoader: !prevState.showLoader,
+    }));
+  }
+
+  getPics = (query, page) => {
     const key = "23098764-6c28342abea29650d4f55356c";
     let url = `https://pixabay.com/api/?q=${query}&page=${page}&key=${key}&image_type=photo&orientation=horizontal&per_page=12`;
 
     axios.get(url).then((response) => {
       this.saveToState(response);
+      this.setState((prevState) => ({
+        currentPage: prevState.currentPage + 1,
+      }));
+      this.loaderHandler();
     });
-  }
+  };
 
   saveToState = (response) => {
     let newPicsArr = [];
     const responseHits = response.data.hits;
+    if (responseHits.length === 0) {
+      alert(`Write something correct`);
+    }
     newPicsArr = [...this.state.pics, ...responseHits];
     this.setState(({ pics }) => ({ pics: newPicsArr }));
   };
@@ -38,14 +53,19 @@ export default class App extends Component {
       searchQuery: "",
       pics: [],
       showModal: false,
-      modalImage: "",
+      modalPic: "",
       currentPage: 1,
     });
   }
 
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
+  };
+
   onSubmit = (e) => {
     e.preventDefault();
     this.resetState();
+    this.loaderHandler();
     const searchQueryValue = e.target[1].value;
     this.setState({ searchQuery: searchQueryValue });
     const page = 1;
@@ -54,15 +74,36 @@ export default class App extends Component {
   };
 
   loadMore() {
-    this.getPics(this.state.searchQuery, this.state.currentPage);
+    const cat = "cat";
+    const number = 2;
+    this.getPics(cat, number);
   }
 
+  modalOpener(link) {
+    this.toggleModal();
+    this.setState(({ modalPic }) => ({ modalPic: link }));
+  }
   render() {
     return (
       <div className="App">
         <Searchbar onSubmit={this.onSubmit} />
-        <ImageGallery pics={this.state.pics} />
+        <ImageGallery
+          pics={this.state.pics}
+          openLargeImage={this.modalOpener}
+        />
         {this.state.searchQuery !== "" && <Button handler={this.loadMore} />}
+        {this.state.showLoader && (
+          <Loader
+            className="spin"
+            type="Bars"
+            color="#00BFFF"
+            height={800}
+            width={80}
+          />
+        )}
+        {this.state.showModal && (
+          <Modal toggleModal={this.toggleModal} src={this.state.modalPic} />
+        )}
       </div>
     );
   }
