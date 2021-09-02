@@ -11,6 +11,7 @@ export default class ImageGalleryItem extends Component {
 
   componentDidMount() {
     window.addEventListener("keydown", this.handleKeyDown);
+    window.addEventListener("click", this.handleClosing);
   }
 
   handleKeyDown = (e) => {
@@ -20,13 +21,15 @@ export default class ImageGalleryItem extends Component {
   };
 
   handleClosing = (e) => {
-    if (e.currentTarget === e.target) {
+     const overlay=document.querySelector('.Overlay')
+    if (e.target===overlay) {
       this.props.toggleModal();
     }
   };
 
   componentWillUnmount() {
     window.removeEventListener("keydown", this.handleKeyDown);
+    window.removeEventListener("click", this.handleClosing);
   }
 
   render() {

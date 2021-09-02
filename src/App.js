@@ -17,64 +17,63 @@ export default class App extends Component {
     currentPage: 1,
   }
 
-  componentDidMount() { }
-
   loaderHandler() {
     this.setState((prevState) => ({
       showLoader: !prevState.showLoader,
     }))
   }
-
-  getPics = (query, page) => {
-    const key = '23098764-6c28342abea29650d4f55356c'
-    let url = `https://pixabay.com/api/?q=${query}&page=${page}&key=${key}&image_type=photo&orientation=horizontal&per_page=12`
-
-    axios.get(url).then((response) => {
-      this.saveToState(response)
-      this.setState((prevState) => ({
-        currentPage: prevState.currentPage + 1,
-      }))
-      this.loaderHandler()
-    })
-  }
-
-  saveToState = (response) => {
-    let newPicsArr = []
-    const responseHits = response.data.hits
-    if (responseHits.length === 0) {
-      alert(`Write something correct`)
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.searchQuery !== this.state.searchQuery) {
+      this.setState({ pics: [] })
+      this.getPics()
     }
-    newPicsArr = [...this.state.pics, ...responseHits]
-    this.setState(({ pics }) => ({ pics: newPicsArr }))
+    if (prevState.currentPage !== this.state.currentPage) {
+      this.getPics()
+    }
+    if (this.state.pics !== prevState.pics) {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }
+  getPics = () => {
+    this.setState({ showLoader: true })
+    const { searchQuery, currentPage } = this.state
+    const key = '23098764-6c28342abea29650d4f55356c'
+    let url = `https://pixabay.com/api/?q=${searchQuery}&page=${currentPage}&key=${key}&image_type=photo&orientation=horizontal&per_page=12`
+
+    setTimeout(() => {
+      axios.get(url).then((response) => response.data.hits).then(pics => {
+        if (pics.length) {
+          this.setState(prevState => ({
+            pics: [...prevState.pics, ...pics]
+          }))
+        } else { alert(`${this.state.searchQuery} is not found`) }
+      }).catch(error => alert(error)).finally(() => this.setState({ showLoader: false }))
+    }, 500)
+
   }
 
-  resetState() {
+  toggleModal = () => {
+    this.setState({ showModal: !this.state.showModal })
+  }
+
+  saveInputeQuery = (query) => {
     this.setState({
       searchQuery: '',
       pics: [],
       showModal: false,
-      modalPic: '',
+      modalImage: '',
+      showLoader: false,
       currentPage: 1,
     })
+    this.setState({ searchQuery: query })
+
   }
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({ showModal: !showModal }))
-  }
-
-  onSubmit = (e) => {
-    e.preventDefault()
-    this.resetState()
-    this.loaderHandler()
-    const searchQueryValue = e.target[1].value
-    this.setState({ searchQuery: searchQueryValue })
-    const page = 1
-    this.getPics(searchQueryValue, page)
-    e.target.reset()
-  }
-
-  loadMore() {
-    this.getPics(this.state.searchQuery, this.state.currentPage)
+  loadMore = () => {
+    this.setState({ currentPage: this.state.currentPage + 1 })
   }
 
   modalOpener(link) {
@@ -82,24 +81,25 @@ export default class App extends Component {
   }
   render() {
     return (
-      <div className="App">
-        <Searchbar onSubmit={this.onSubmit} />
+      <div className="App" >
+        <Searchbar onSubmit={this.saveInputeQuery} />
         <ImageGallery
           pics={this.state.pics}
           openlargeimage={(e) =>
             this.modalOpener(e.target.dataset.large)}
         />
-        {this.state.searchQuery !== '' &&
-          <Button handler={this.loadMore} />}
         {this.state.showLoader && (
           <Loader
             className="spin"
             type="Bars"
             color="#00BFFF"
-            height={800}
+            height={80}
             width={80}
           />
         )}
+        {this.state.pics.length &&
+          <Button onClick={this.loadMore} />}
+
         {this.state.showModal && (
           <Modal toggleModal={this.toggleModal}
             src={this.state.modalPic} />
