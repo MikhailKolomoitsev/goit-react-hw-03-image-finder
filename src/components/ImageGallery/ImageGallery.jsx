@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import ImageGalleryItem from "../ImageGalleryItem/ImageGalleryItem";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem'
 
 export default class ImageGalary extends Component {
   static propTypes = {
     pics: PropTypes.array,
     openlargeimage: PropTypes.func,
-  };
+  }
 
-  state = {};
+  state = {}
 
   render() {
     return (
@@ -20,11 +20,11 @@ export default class ImageGalary extends Component {
               key={pic.id}
               src={pic.webformatURL}
               alt={pic.webformatURL}
-              data-large={pic.largeImageURL}
+              large={pic.largeImageURL}
             />
-          );
+          )
         })}
       </ul>
-    );
+    )
   }
 }
